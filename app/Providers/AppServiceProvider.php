@@ -22,6 +22,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+            $url = config('app.url'); // Example: Get from .env or config/app.php
+    // Use $url here
+
+        
         if (env('APP_ENV') === 'production') {
             $url->forceScheme('https');
         }
