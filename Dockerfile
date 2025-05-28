@@ -10,8 +10,10 @@ RUN apk update \
 # Copy application files
 COPY . .
 
+# Install Composer dependencies
+RUN composer install --no-dev --optimize-autoloader --working-dir=/var/www/html
+
 # Image configuration
-ENV SKIP_COMPOSER 1
 ENV WEBROOT /var/www/html/public
 ENV PHP_ERRORS_STDERR 1
 ENV RUN_SCRIPTS 1
