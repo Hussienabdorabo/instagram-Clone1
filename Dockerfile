@@ -1,10 +1,10 @@
 FROM richarvey/nginx-php-fpm:latest
 
-# Install Node.js and npm with a specific version compatible with the image
+# Install Node.js and npm with a compatible version
 USER root
 RUN apk update \
     && apk add --no-cache curl nodejs=18.20.1-r0 npm \
-    && npm install -g npm@latest \
+    && npm install -g npm@9.6.6 \
     && npm cache clean --force
 
 # Copy application files
