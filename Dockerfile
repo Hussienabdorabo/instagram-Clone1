@@ -1,44 +1,23 @@
-FROM php:8.2-fpm
+FROM richarvey/nginx-php-fpm:latest
 
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip \
-    git \
-    curl \
-    libzip-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libmcrypt-dev \
-    libonig-dev \
-    libssl-dev \
-    libsqlite3-dev \
-    default-mysql-client
+# Install Node.js and npm for Vite or other frontend assets (optional)
+USER root
+RUN apk update && apk add --no-cache curl nodejs npm && npm install -g npm@latest
 
-# PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
-
-# Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Set working directory
-WORKDIR /var/www
-
-# Copy files
+# Copy application files
 COPY . .
 
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader
+# Image configuration
+ENV SKIP_COMPOSER 1
+ENV WEBROOT /var/www/html/public
+ENV PHP_ERRORS_STDERR 1
+ENV RUN_SCRIPTS 1
+ENV REAL_IP_HEADER 1
 
-# Set file permissions
-RUN chmod -R 775 storage bootstrap/cache
+# Laravel configuration
+ENV APP_ENV production
+ENV APP_DEBUG false
+ENV LOG_CHANNEL stderr
+ENV COMPOSER_ALLOW_SUPERUSER 1
 
-# Generate app key (optional if APP_KEY is in .env)
-# RUN php artisan key:generate
-
-EXPOSE 8000
-
-CMD php artisan serve --host=0.0.0.0 --port=8000
+CMD ["/start.sh"]
