@@ -1,8 +1,11 @@
 FROM richarvey/nginx-php-fpm:latest
 
-# Install Node.js and npm for Vite or other frontend assets (optional)
+# Install Node.js and npm with a specific version compatible with the image
 USER root
-RUN apk update && apk add --no-cache curl nodejs npm && npm install -g npm@latest
+RUN apk update \
+    && apk add --no-cache curl nodejs=18.20.1-r0 npm \
+    && npm install -g npm@latest \
+    && npm cache clean --force
 
 # Copy application files
 COPY . .
